@@ -17,6 +17,7 @@ class NRFLite {
     // Use the debug and debugln DEFINES in NRFLite.cpp to use the serial object.
     NRFLite() {}
     NRFLite(Stream &serial) : _serial(&serial) {}
+    void setAddr(uint8_t * addr);
     
     enum Bitrates { BITRATE2MBPS, BITRATE1MBPS, BITRATE250KBPS };
     enum SendType { REQUIRE_ACK, NO_ACK };
@@ -98,6 +99,7 @@ class NRFLite {
     uint16_t _transmissionRetryWaitMicros, _maxHasDataIntervalMicros;
     int16_t _lastToRadioId = -1;
     uint32_t _microsSinceLastDataCheck;
+    uint8_t _address[5];
     
     uint8_t getPipeOfFirstRxPacket();
     uint8_t getRxPacketLength();

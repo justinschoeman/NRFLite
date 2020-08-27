@@ -24,6 +24,10 @@ uint8_t NRFLite::init(uint8_t radioId, uint8_t cePin, uint8_t csnPin, Bitrates b
     _cePin = cePin;
     _csnPin = csnPin;
     _useTwoPinSpiTransfer = 0;
+    _address[0] = 1;
+    _address[1] = 2;
+    _address[2] = 3;
+    _address[3] = 4;
 
     // Default states for the radio pins.  When CSN is LOW the radio listens to SPI communication,
     // so we operate most of the time with CSN HIGH.
@@ -78,6 +82,11 @@ uint8_t NRFLite::initTwoPin(uint8_t radioId, uint8_t momiPin, uint8_t sckPin, Bi
 }
 
 #endif
+
+void NRFLite::setAddr(uint8_t * addr)
+{
+    memcpy(_address, addr, 4);
+}
 
 void NRFLite::addAckData(void *data, uint8_t length, uint8_t removeExistingAcks)
 {
@@ -417,8 +426,8 @@ uint8_t NRFLite::initRadio(uint8_t radioId, Bitrates bitrate, uint8_t channel)
     // Assign this radio's address to RX pipe 1.  When another radio sends us data, this is the address
     // it will use.  We use RX pipe 1 to store our address since the address in RX pipe 0 is reserved
     // for use with auto-acknowledgment packets.
-    uint8_t address[5] = { 1, 2, 3, 4, radioId };
-    writeRegister(RX_ADDR_P1, &address, 5);
+    _address[4] = radioId;
+    writeRegister(RX_ADDR_P1, &_address, 5);
 
     // Enable dynamically sized packets on the 2 RX pipes we use, 0 and 1.
     // RX pipe address 1 is used to for normal packets from radios that send us data.
@@ -447,9 +456,9 @@ void NRFLite::prepForTx(uint8_t toRadioId, SendType sendType)
 
         // TX pipe address sets the destination radio for the data.
         // RX pipe 0 is special and needs the same address in order to receive ACK packets from the destination radio.
-        uint8_t address[5] = { 1, 2, 3, 4, toRadioId };
-        writeRegister(TX_ADDR, &address, 5);
-        writeRegister(RX_ADDR_P0, &address, 5);
+        _address[4] = toRadioId;
+        writeRegister(TX_ADDR, &_address, 5);
+        writeRegister(RX_ADDR_P0, &_address, 5);
     }
 
     // Ensure radio is ready for TX operation.
