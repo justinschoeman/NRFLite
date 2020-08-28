@@ -83,7 +83,7 @@ uint8_t NRFLite::initTwoPin(uint8_t radioId, uint8_t momiPin, uint8_t sckPin, Bi
 
 #endif
 
-void NRFLite::setAddr(uint8_t * addr)
+void NRFLite::setAddr(const char * addr)
 {
     memcpy(_address, addr, 4);
 }

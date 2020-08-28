@@ -17,7 +17,7 @@ class NRFLite {
     // Use the debug and debugln DEFINES in NRFLite.cpp to use the serial object.
     NRFLite() {}
     NRFLite(Stream &serial) : _serial(&serial) {}
-    void setAddr(uint8_t * addr);
+    void setAddr(const char * addr);
     
     enum Bitrates { BITRATE2MBPS, BITRATE1MBPS, BITRATE250KBPS };
     enum SendType { REQUIRE_ACK, NO_ACK };
